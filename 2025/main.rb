@@ -1,18 +1,18 @@
-require './dial'
+require './decoder'
 
-dial = Dial.new
-num_zero = 0
+decoder = Decoder.new
 
-def parse_instruction(str)
-  direction = str[0]
-  value = str[1..].to_i
-  direction == 'R' ? value : -value
-end
+print "Enter filename (default: input.txt): "
+filename = gets.chomp
+filename = 'input.txt' if filename.empty?
 
-File.foreach('input.txt') do |line|
-  dial.move(parse_instruction(line))
+print "Enter method (simple/complex): "
+method = gets.chomp.downcase
 
-  num_zero += 1 if dial.position.zero?
-end
+num_zero = if method == 'simple'
+             decoder.simple_decode(filename)
+           else
+             decoder.complex_decode(filename)
+           end
 
-puts num_zero
+puts "Result: #{num_zero}"
