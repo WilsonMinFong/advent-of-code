@@ -1,40 +1,44 @@
-# Brute force solution: Loop through each permutation of two numbers with ordered digits
-# Better: Find greatest 10s place joltage, then iterate through remaining joltages to find greatest 1s
-
-def largest_joltage(str)
-  tens_joltage_battery = 0
-  ones_joltage_battery = 0
-
+def largest_joltage_n(str, n)
   joltages = str.chomp.chars.map(&:to_i)
+  return 0 if joltages.length < n
+  current_index = 0
+  result = 0
 
-  joltages[0...(joltages.length - 1)].each_with_index do |n, idx|
-    if n > tens_joltage_battery
-      tens_joltage_battery = n
-      ones_joltage_battery = 0
-    end
-
-    if n == tens_joltage_battery
-      joltages[(idx + 1)..joltages.length].each do |m|
-        ones_joltage_battery = m if m > ones_joltage_battery
-      end
-    end
+  n.times do |i|
+    limit_index = joltages.length - (n - i)
+    
+    window = joltages[current_index..limit_index]
+    max_val = window.max
+    
+    found_index = current_index + window.index(max_val)
+    
+    result = result * 10 + max_val
+    current_index = found_index + 1
   end
 
-  tens_joltage_battery * 10 + ones_joltage_battery
+  result
 end
 
-example_joltage = 0
+example_joltage_2 = 0
+example_joltage_12 = 0
 
 File.readlines('./example_input.txt').each do |line|
-  example_joltage += largest_joltage(line)
+  example_joltage_2 += largest_joltage_n(line, 2)
+  example_joltage_12 += largest_joltage_n(line, 12)
 end
 
-puts "Example total output joltage: #{example_joltage}"
-
-problem_joltage = 0
+problem_joltage_2 = 0
+problem_joltage_12 = 0
 
 File.readlines('./input.txt').each do |line|
-  problem_joltage += largest_joltage(line)
+  problem_joltage_2 += largest_joltage_n(line, 2)
+  problem_joltage_12 += largest_joltage_n(line, 12)
 end
 
-puts "Problem total output joltage: #{problem_joltage}"
+puts "=== Part 1 ==="
+puts "Example total output joltage: #{example_joltage_2}"
+puts "Problem total output joltage: #{problem_joltage_2}"
+
+puts "=== Part 2 ==="
+puts "Example total output joltage: #{example_joltage_12}"
+puts "Problem total output joltage: #{problem_joltage_12}"
