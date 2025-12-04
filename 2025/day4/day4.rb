@@ -50,6 +50,29 @@ def num_accessible_rolls_of_paper(grid)
   total
 end
 
+def num_removable_rolls_of_paper(grid)
+  length_x = grid[0].length
+  length_y = grid.length
+
+  next_grid = grid
+  total = 0
+
+  until num_accessible_rolls_of_paper(next_grid) == 0
+    current_grid = next_grid
+
+    length_x.times do |x|
+      length_y.times do |y|
+        if accessible_roll_of_paper?(current_grid, x, y)
+          total += 1
+          next_grid[y][x] = 'x'
+        end
+      end
+    end
+  end
+
+  total
+end
+
 def parse_grid(filename)
   File.readlines(filename).map { |line| line.chomp.split('') }
 end
@@ -61,3 +84,7 @@ grid = parse_grid('./input.txt')
 puts '=== Part 1 ==='
 puts "Example input result: #{num_accessible_rolls_of_paper(example_grid)}"
 puts "Input result: #{num_accessible_rolls_of_paper(grid)}"
+
+puts '=== Part 2 ==='
+puts "Example input result: #{num_removable_rolls_of_paper(example_grid)}"
+puts "Input result: #{num_removable_rolls_of_paper(grid)}"
